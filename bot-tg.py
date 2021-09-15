@@ -1,5 +1,6 @@
 import argparse
 import json
+import time
 import logging
 import os
 import uuid
@@ -131,6 +132,7 @@ if __name__ == '__main__':
             if 'Default' in intent.display_name:
                 continue
             delete_intent(dialogflow_project_id, intent.name.split('/')[-1])
+            time.sleep(3)  # limit 'All other requests per minute' of service 'dialogflow.googleapis.com'
 
         with open(base_qa_filename, 'r') as file:
             questions = json.load(file)
@@ -142,6 +144,7 @@ if __name__ == '__main__':
                 questions[phrase_part]['questions'],
                 questions[phrase_part]['answer']
             )
+            time.sleep(3)  # limit 'All other requests per minute' of service 'dialogflow.googleapis.com'
 
         logging.debug(f'DialogFlow base update complete.')
 

@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 *.json
 .idea
+*.xls
+hopper*
+requirements_t.txt
