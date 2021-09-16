@@ -43,7 +43,7 @@ def create_intent(
     response = intents_client.create_intent(
         request={"parent": parent, "intent": intent}
     )
-    print("Intent created: {}".format(response))
+    logging.debug("Intent created: {}".format(response))
 
 
 if __name__ == '__main__':
@@ -63,7 +63,11 @@ if __name__ == '__main__':
     dialogflow_project_id = os.environ['DIALOG-PROJECT-ID']
     base_qa_filename = os.environ['BASE_QA_FILENAME']
 
-    input('Renew DialogFlow base?\npress Enter to continue\npress Ctrl+C to Cancel\n')
+    input('''
+          Renew DialogFlow base?
+          press Enter to continue
+          press Ctrl+C to Cancel
+          ''')
     logging.debug('Renew DialogFlow base')
 
     if not os.path.exists(base_qa_filename):
@@ -74,7 +78,8 @@ if __name__ == '__main__':
         if 'Default' in intent.display_name:
             continue
         delete_intent(dialogflow_project_id, intent.name.split('/')[-1])
-        time.sleep(3)  # limit 'All other requests per minute' of service 'dialogflow.googleapis.com'
+        # limit 'All other requests per minute' of DialogFlow service
+        time.sleep(3)
 
     with open(base_qa_filename, 'r') as file:
         questions = json.load(file)
@@ -86,6 +91,7 @@ if __name__ == '__main__':
             questions[phrase_part]['questions'],
             questions[phrase_part]['answer']
         )
-        time.sleep(3)  # limit 'All other requests per minute' of service 'dialogflow.googleapis.com'
+        # limit 'All other requests per minute' of DialogFlow service
+        time.sleep(3)
 
-    logging.debug(f'DialogFlow base update complete.')
+    logging.debug('DialogFlow base update complete.')
