@@ -24,7 +24,7 @@ BASE_QA_FILENAME=
 # На каком языке вы будете говорить с ботом?
 LANGUAGE=ru
 
-# Токен вашего VK.ru бота
+# Токен вашего VK.com бота
 VK-TOKEN=
 ```
 1.4. Ещё нам нужен файл с вопросами и ответами, на основании которого мы обучим нейросеть DialogFlow.
@@ -80,6 +80,8 @@ python bot_tg.py
 ```shell
 python bot_tg.py --debug=True
 ```
+Результат примерно следующий:   
+![bot_tg.gif](bot_tg.gif)
 
 1.6 Очень полезно иметь под рукой: 
 
@@ -88,7 +90,7 @@ python bot_tg.py --debug=True
 - [Как создать Агента проекта DialogFlow](https://cloud.google.com/dialogflow/docs/quick/build-agent)
 - [Создание JSON-ключа от Google](https://cloud.google.com/docs/authentication/getting-started)
 
-### 2. VK.ru бот
+### 2. VK.com бот
 2.1. Выполните пункты 1.1-1.4, если они ещё не выполнены.  
 2.2. Для группы ВКонтакте разрешите Сообщения и использование Ботов  
 2.3. Запуск бота ВКонтакте такой-же простой:
@@ -100,3 +102,6 @@ python bot_vk.py
 ```shell
 python bot_vk.py --debug=True
 ```
+
+После запуска вы получите примерно следующий результат:   
+![bot_vk.gif](bot_vk.gif)
