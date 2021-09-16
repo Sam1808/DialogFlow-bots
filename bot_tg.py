@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import telegram
 import uuid
 from google.cloud import dialogflow
 from dotenv import load_dotenv
@@ -10,8 +11,31 @@ from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
 
 
+logger = logging.getLogger('Logger')
+
+
+class TelegramLogsHandler(logging.Handler):
+
+    def __init__(self, log_bot, chat_id, bot_name):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = log_bot
+        self.name = bot_name
+        self.tg_bot.send_message(chat_id=self.chat_id, text=f'{bot_name} LOG: started')
+
+    def emit(self, record):
+        log_entry = f"{self.name} LOG: {self.format(record)}"
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Hello!")
+
+
+def _error(update, context):
+    logger.info('Bot catch some exception. Need your attention.')
+    print('^' * 20)
+    logging.exception(context.error)
 
 
 def send_chat_message(
@@ -49,6 +73,17 @@ def fetch_answer_from_intent(project_id, session_id, texts, language_code):
         return response.query_result.fulfillment_text
 
 
+def init_telegram_log_bot(bot_name='Telegram bot'):
+    logger.setLevel(logging.INFO)
+    telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
+    telegram_log_id = os.environ['TELEGRAM-LOG-ID']
+    bot = telegram.Bot(token=telegram_log_token)
+    logger.addHandler(TelegramLogsHandler(
+        bot,
+        telegram_log_id,
+        bot_name))
+
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
@@ -70,6 +105,8 @@ if __name__ == '__main__':
     language = os.environ['LANGUAGE']
     session_id = str(uuid.uuid4())
 
+    init_telegram_log_bot()
+
     updater = Updater(token=telegram_token, use_context=True)
     dispatcher = updater.dispatcher
 
@@ -88,5 +125,6 @@ if __name__ == '__main__':
         partial_send_chat_message
     )
     dispatcher.add_handler(send_chat_message_handler)
+    dispatcher.add_error_handler(_error)
 
     updater.start_polling()

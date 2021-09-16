@@ -6,6 +6,8 @@ import os
 from google.cloud import dialogflow
 from dotenv import load_dotenv
 
+logger = logging.getLogger('Logger')
+
 
 def list_intents(project_id):
     intents_client = dialogflow.IntentsClient()
@@ -43,7 +45,7 @@ def create_intent(
     response = intents_client.create_intent(
         request={"parent": parent, "intent": intent}
     )
-    logging.debug("Intent created: {}".format(response))
+    logger.debug("Intent created: {}".format(response))
 
 
 if __name__ == '__main__':
@@ -57,7 +59,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     level = logging.DEBUG if arguments.debug else logging.INFO
-    logging.basicConfig(level=level)
+    logger.setLevel(level=level)
 
     load_dotenv()
     dialogflow_project_id = os.environ['DIALOG-PROJECT-ID']
@@ -68,10 +70,10 @@ if __name__ == '__main__':
           press Enter to continue
           press Ctrl+C to Cancel
           ''')
-    logging.debug('Renew DialogFlow base')
+    logger.debug('Renew DialogFlow base')
 
     if not os.path.exists(base_qa_filename):
-        logging.debug(f'\nSomething wrong with {base_qa_filename} file.\n')
+        logger.debug(f'\nSomething wrong with {base_qa_filename} file.\n')
         raise FileExistsError
 
     for intent in list_intents(dialogflow_project_id):
@@ -94,4 +96,4 @@ if __name__ == '__main__':
         # limit 'All other requests per minute' of DialogFlow service
         time.sleep(3)
 
-    logging.debug('DialogFlow base update complete.')
+    logger.debug('DialogFlow base update complete.')
