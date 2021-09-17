@@ -87,7 +87,7 @@ python bot_tg.py --debug=True
 Результат примерно следующий:   
 ![bot_tg.gif](bot_tg.gif)  
 
-Попробуйте сами погонять, тестовый бот развернут на Heroku под именем [@DialogFlow_helper_bot](@DialogFlow_helper_bot)  
+Попробуйте сами погонять, тестовый бот развернут на Heroku под именем [@DialogFlow_helper_bot](https://t.me/DialogFlow_helper_bot)  
 
 
 1.6 Очень полезно иметь под рукой: 
