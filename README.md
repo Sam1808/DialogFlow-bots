@@ -85,7 +85,10 @@ python bot_tg.py
 python bot_tg.py --debug=True
 ```
 Результат примерно следующий:   
-![bot_tg.gif](bot_tg.gif)
+![bot_tg.gif](bot_tg.gif)  
+
+Попробуйте сами погонять, тестовый бот развернут на Heroku под именем [@DialogFlow_helper_bot](@DialogFlow_helper_bot)  
+
 
 1.6 Очень полезно иметь под рукой: 
 
@@ -109,3 +112,6 @@ python bot_vk.py --debug=True
 
 После запуска вы получите примерно следующий результат:   
 ![bot_vk.gif](bot_vk.gif)
+
+И этого бота можно проверить, тестовый бот развернут на Heroku 
+для группы [DialogFlow_group](https://vk.com/club207174460)
