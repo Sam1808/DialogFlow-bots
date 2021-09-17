@@ -101,7 +101,6 @@ if __name__ == '__main__':
     load_dotenv()
     telegram_token = os.environ['TELEGRAM-TOKEN']
     dialogflow_project_id = os.environ['DIALOG-PROJECT-ID']
-    base_qa_filename = os.environ['BASE_QA_FILENAME']
     language = os.environ['LANGUAGE']
     session_id = str(uuid.uuid4())
 
