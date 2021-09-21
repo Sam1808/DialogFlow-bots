@@ -22,7 +22,7 @@ def _error(_, context):
     logging.exception(context.error)
 
 
-def send_chat_message(
+def send_fetched_answer_to_chat(
         update,
         context,
         project_id: str,
@@ -57,7 +57,11 @@ if __name__ == '__main__':
     telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
     telegram_log_id = os.environ['TELEGRAM-LOG-ID']
 
-    init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name='Telegram bot')
+    init_telegram_log_bot(
+        telegram_log_token,
+        telegram_log_id,
+        bot_name='Telegram bot'
+    )
 
     updater = Updater(token=telegram_token, use_context=True)
     dispatcher = updater.dispatcher
@@ -65,15 +69,15 @@ if __name__ == '__main__':
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
 
-    partial_send_chat_message = partial(
-        send_chat_message,
+    partial_send_fetched_answer_to_chat = partial(
+        send_fetched_answer_to_chat,
         project_id=dialogflow_project_id,
         language=language
     )
 
     send_chat_message_handler = MessageHandler(
         Filters.text & (~Filters.command),
-        partial_send_chat_message
+        partial_send_fetched_answer_to_chat
     )
     dispatcher.add_handler(send_chat_message_handler)
     dispatcher.add_error_handler(_error)

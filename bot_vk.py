@@ -12,7 +12,12 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 logger = logging.getLogger('Logger')
 
 
-def send_chat_message(event, vk_api, project_id, language_code):
+def send_fetched_answer_to_chat(
+        event,
+        vk_api,
+        project_id,
+        language_code
+):
     session_id = f'vk-{event.user_id}'
     reply = fetch_answer_from_intent(
         project_id,
@@ -50,7 +55,11 @@ if __name__ == '__main__':
     telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
     telegram_log_id = os.environ['TELEGRAM-LOG-ID']
 
-    init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name='VK.com bot')
+    init_telegram_log_bot(
+        telegram_log_token,
+        telegram_log_id,
+        bot_name='VK.com bot'
+    )
 
     vk_session = vk_api.VkApi(token=vk_token)
     vk_api = vk_session.get_api()
@@ -61,7 +70,7 @@ if __name__ == '__main__':
         try:
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                    send_chat_message(
+                    send_fetched_answer_to_chat(
                         event,
                         vk_api,
                         dialogflow_project_id,
