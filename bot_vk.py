@@ -4,7 +4,6 @@ import random
 import logging
 import os
 import time
-import uuid
 from bot_tools import fetch_answer_from_intent
 from bot_tools import init_telegram_log_bot
 from dotenv import load_dotenv
@@ -15,7 +14,8 @@ from requests.exceptions import ReadTimeout
 logger = logging.getLogger('Logger')
 
 
-def send_chat_message(event, vk_api, project_id, session_id, language_code):
+def send_chat_message(event, vk_api, project_id, language_code):
+    session_id = f'vk-{event.user_id}'
     reply = fetch_answer_from_intent(
         project_id,
         session_id,
@@ -51,7 +51,6 @@ if __name__ == '__main__':
     language = os.environ['LANGUAGE']
     telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
     telegram_log_id = os.environ['TELEGRAM-LOG-ID']
-    session_id = str(uuid.uuid4())
 
     init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name='VK.com bot')
 
@@ -68,7 +67,6 @@ if __name__ == '__main__':
                         event,
                         vk_api,
                         dialogflow_project_id,
-                        session_id,
                         language
                     )
         except ReadTimeout:
