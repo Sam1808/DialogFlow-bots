@@ -19,7 +19,6 @@ def start(update, context):
 
 def _error(_, context):
     logger.info('Bot catch some exception. Need your attention.')
-    print('^' * 20)
     logging.exception(context.error)
 
 

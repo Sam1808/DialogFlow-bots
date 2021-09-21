@@ -69,6 +69,5 @@ if __name__ == '__main__':
                     )
 
         except Exception as error:
-            print('^' * 20)
             logger.info('Bot catch some exception. Need your attention.')
             logging.exception(error)
