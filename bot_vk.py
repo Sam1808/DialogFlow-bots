@@ -3,12 +3,10 @@ import vk_api
 import random
 import logging
 import os
-import time
 from bot_tools import fetch_answer_from_intent
 from bot_tools import init_telegram_log_bot
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
-from requests.exceptions import ReadTimeout
 
 
 logger = logging.getLogger('Logger')
@@ -69,12 +67,6 @@ if __name__ == '__main__':
                         dialogflow_project_id,
                         language
                     )
-        except ReadTimeout:
-            logging.debug(f'''
-            ReadTimeout or Connection error.
-            Re-request after 60 sec.
-            ''')
-            time.sleep(60)
 
         except Exception as error:
             print('^' * 20)
