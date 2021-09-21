@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 logger = logging.getLogger('Logger')
 
 
-def list_intents(project_id):
+def get_list_intents(project_id):
     intents_client = dialogflow.IntentsClient()
     parent = dialogflow.AgentsClient.agent_path(project_id)
     intents = intents_client.list_intents(request={"parent": parent})
@@ -76,7 +76,7 @@ if __name__ == '__main__':
         logger.debug(f'\nSomething wrong with {base_qa_filename} file.\n')
         raise FileExistsError
 
-    for intent in list_intents(dialogflow_project_id):
+    for intent in get_list_intents(dialogflow_project_id):
         if 'Default' in intent.display_name:
             continue
         delete_intent(dialogflow_project_id, intent.name.split('/')[-1])
