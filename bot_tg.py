@@ -3,8 +3,8 @@ import logging
 import os
 import telegram
 import uuid
-from google.cloud import dialogflow
 from dotenv import load_dotenv
+from bot_tools import fetch_answer_from_intent
 from functools import partial
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -32,7 +32,7 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Hello!")
 
 
-def _error(update, context):
+def _error(_, context):
     logger.info('Bot catch some exception. Need your attention.')
     print('^' * 20)
     logging.exception(context.error)
@@ -46,31 +46,10 @@ def send_chat_message(
         language: str
 ):
     reply = fetch_answer_from_intent(
-        project_id, session_id, [update.message.text], language
+        project_id, session_id, update.message.text, language
     )
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
-
-
-def fetch_answer_from_intent(project_id, session_id, texts, language_code):
-    session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(project_id, session_id)
-    logging.info("Session path: {}\n".format(session))
-    for text in texts:
-        text_input = dialogflow.TextInput(
-            text=text, language_code=language_code
-        )
-        query_input = dialogflow.QueryInput(text=text_input)
-        response = session_client.detect_intent(
-            request={"session": session, "query_input": query_input}
-        )
-        logging.info("=" * 20)
-        logging.info(
-            "Input: {}".format(response.query_result.query_text)
-        )
-        logging.info(
-            "Output: {}".format(response.query_result.fulfillment_text)
-        )
-        return response.query_result.fulfillment_text
+    if reply:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 
 def init_telegram_log_bot(bot_name='Telegram bot'):
