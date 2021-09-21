@@ -6,11 +6,11 @@ import os
 import time
 import uuid
 from bot_tools import fetch_answer_from_intent
+from bot_tools import init_telegram_log_bot
+from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
 from requests.exceptions import ReadTimeout
-from dotenv import load_dotenv
 
-from bot_tg import init_telegram_log_bot
 
 logger = logging.getLogger('Logger')
 
@@ -49,9 +49,11 @@ if __name__ == '__main__':
     vk_token = os.environ['VK-TOKEN']
     dialogflow_project_id = os.environ['DIALOG-PROJECT-ID']
     language = os.environ['LANGUAGE']
+    telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
+    telegram_log_id = os.environ['TELEGRAM-LOG-ID']
     session_id = str(uuid.uuid4())
 
-    init_telegram_log_bot(bot_name='VK.com bot')
+    init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name='VK.com bot')
 
     vk_session = vk_api.VkApi(token=vk_token)
     vk_api = vk_session.get_api()

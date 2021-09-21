@@ -1,10 +1,10 @@
 import argparse
 import logging
 import os
-import telegram
 import uuid
 from dotenv import load_dotenv
 from bot_tools import fetch_answer_from_intent
+from bot_tools import init_telegram_log_bot
 from functools import partial
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -12,20 +12,6 @@ from telegram.ext import MessageHandler, Filters
 
 
 logger = logging.getLogger('Logger')
-
-
-class TelegramLogsHandler(logging.Handler):
-
-    def __init__(self, log_bot, chat_id, bot_name):
-        super().__init__()
-        self.chat_id = chat_id
-        self.tg_bot = log_bot
-        self.name = bot_name
-        self.tg_bot.send_message(chat_id=self.chat_id, text=f'{bot_name} LOG: started')
-
-    def emit(self, record):
-        log_entry = f"{self.name} LOG: {self.format(record)}"
-        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def start(update, context):
@@ -52,17 +38,6 @@ def send_chat_message(
         context.bot.send_message(chat_id=update.effective_chat.id, text=reply)
 
 
-def init_telegram_log_bot(bot_name='Telegram bot'):
-    logger.setLevel(logging.INFO)
-    telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
-    telegram_log_id = os.environ['TELEGRAM-LOG-ID']
-    bot = telegram.Bot(token=telegram_log_token)
-    logger.addHandler(TelegramLogsHandler(
-        bot,
-        telegram_log_id,
-        bot_name))
-
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
@@ -81,9 +56,11 @@ if __name__ == '__main__':
     telegram_token = os.environ['TELEGRAM-TOKEN']
     dialogflow_project_id = os.environ['DIALOG-PROJECT-ID']
     language = os.environ['LANGUAGE']
+    telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
+    telegram_log_id = os.environ['TELEGRAM-LOG-ID']
     session_id = str(uuid.uuid4())
 
-    init_telegram_log_bot()
+    init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name='Telegram bot')
 
     updater = Updater(token=telegram_token, use_context=True)
     dispatcher = updater.dispatcher

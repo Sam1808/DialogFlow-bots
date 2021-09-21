@@ -1,5 +1,22 @@
 import logging
+import telegram
 from google.cloud import dialogflow
+
+logger = logging.getLogger('Logger')
+
+
+class TelegramLogsHandler(logging.Handler):
+
+    def __init__(self, log_bot, chat_id, bot_name):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = log_bot
+        self.name = bot_name
+        self.tg_bot.send_message(chat_id=self.chat_id, text=f'{bot_name} LOG: started')
+
+    def emit(self, record):
+        log_entry = f"{self.name} LOG: {self.format(record)}"
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def fetch_answer_from_intent(project_id, session_id, text, language_code, silent=False):
@@ -25,3 +42,12 @@ def fetch_answer_from_intent(project_id, session_id, text, language_code, silent
         logging.debug(f'Bot cant understand (is fallback). Text: {text}')
         return None
     return response.query_result.fulfillment_text
+
+
+def init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name):
+    logger.setLevel(logging.INFO)
+    bot = telegram.Bot(token=telegram_log_token)
+    logger.addHandler(TelegramLogsHandler(
+        bot,
+        telegram_log_id,
+        bot_name))
