@@ -3,7 +3,7 @@ import logging
 import os
 from dotenv import load_dotenv
 from bot_tools import fetch_answer_from_intent
-from bot_tools import init_telegram_log_bot
+from bot_tools import setup_logger
 from functools import partial
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -22,7 +22,7 @@ def _error(_, context):
     logging.exception(context.error)
 
 
-def send_fetched_answer_to_chat(
+def send_answer(
         update,
         context,
         project_id: str,
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
     telegram_log_id = os.environ['TELEGRAM-LOG-ID']
 
-    init_telegram_log_bot(
+    setup_logger(
         telegram_log_token,
         telegram_log_id,
         bot_name='Telegram bot'
@@ -69,15 +69,15 @@ if __name__ == '__main__':
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
 
-    partial_send_fetched_answer_to_chat = partial(
-        send_fetched_answer_to_chat,
+    partial_send_answer = partial(
+        send_answer,
         project_id=dialogflow_project_id,
         language=language
     )
 
     send_chat_message_handler = MessageHandler(
         Filters.text & (~Filters.command),
-        partial_send_fetched_answer_to_chat
+        partial_send_answer
     )
     dispatcher.add_handler(send_chat_message_handler)
     dispatcher.add_error_handler(_error)

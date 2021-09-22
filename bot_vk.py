@@ -4,7 +4,7 @@ import random
 import logging
 import os
 from bot_tools import fetch_answer_from_intent
-from bot_tools import init_telegram_log_bot
+from bot_tools import setup_logger
 from dotenv import load_dotenv
 from vk_api.longpoll import VkLongPoll, VkEventType
 
@@ -12,7 +12,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 logger = logging.getLogger('Logger')
 
 
-def send_fetched_answer_to_chat(
+def send_answer(
         event,
         vk_api,
         project_id,
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     telegram_log_token = os.environ['TELEGRAM-LOG-TOKEN']
     telegram_log_id = os.environ['TELEGRAM-LOG-ID']
 
-    init_telegram_log_bot(
+    setup_logger(
         telegram_log_token,
         telegram_log_id,
         bot_name='VK.com bot'
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         try:
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                    send_fetched_answer_to_chat(
+                    send_answer(
                         event,
                         vk_api,
                         dialogflow_project_id,

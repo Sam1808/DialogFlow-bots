@@ -53,7 +53,7 @@ def fetch_answer_from_intent(
     return response.query_result.fulfillment_text
 
 
-def init_telegram_log_bot(telegram_log_token, telegram_log_id, bot_name):
+def setup_logger(telegram_log_token, telegram_log_id, bot_name):
     logger.setLevel(logging.INFO)
     bot = telegram.Bot(token=telegram_log_token)
     logger.addHandler(TelegramLogsHandler(
